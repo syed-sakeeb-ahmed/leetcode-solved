@@ -1,0 +1,54 @@
+class Solution {
+public:
+    void solveSudoku(vector<vector<char>>& board) {
+        solve(board);
+    }
+private:
+
+    bool solve(vector<vector<char>>& board) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] == '.') {
+                    for (char val = '1'; val <= '9'; val++) {
+                        if (isValid(board, i, j, val)) {
+                            board[i][j] = val;
+                            if (solve(board)) return true;
+                            board[i][j] = '.';
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    bool isValid(vector<vector<char>>& board, int row, int col, char value) {
+        //Check rows and cols
+        for (int i = 0; i < 9; i++) {
+            if (board[row][i] == value) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < 9; i++) {
+            if (board[i][col] == value) {
+                return false;
+            }
+        }
+
+        //Check boxes
+        int box_row = row / 3;
+        int box_col = col / 3;
+        int row_start = box_row * 3;
+        int col_start = box_col * 3;
+        for (int i = row_start; i < row_start + 3; i++) {
+            for (int j = col_start; j < col_start + 3; j++) {
+                if (board[i][j] == value) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    } 
+};
