@@ -1,0 +1,271 @@
+//Notes: 
+
+//Second while loop:
+//I only enter this loop when I have the
+//smallest substring starting at l
+//So only thing I can do is decrement l
+//in the hopes of getting a smaller substring
+//since decrementing r will give me an invalid
+//window/substring on the other hand incrementing
+//r will give me a bigger substring (absolute fail)
+//completely useless loop in that case
+
+//Passing array by reference made code go from 180ms to 19ms
+//Not using function and directly using array in original function ran in 4ms
+
+class Solution {
+private:
+    bool isValidWindow(int (&windowFrequency)[], int (&tFrequency)[]) {
+        for (int i = 0; i < 256; i++) {
+            if (windowFrequency[i] < tFrequency[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+public:
+    string minWindow(string s, string t) {
+        int windowFrequency[256] = {0};
+        int tFrequency[256] = {0};
+
+        int t_len = t.size();
+        int s_len = s.size();
+
+        if(t_len==0 || s_len == 0 || s_len<t_len)return "";
+
+        for (int i = 0; i < t_len; i++) {
+            tFrequency[t[i]]++;
+        }
+        
+        
+        int startIndex = -1;
+        int endIndex = -1;
+        int l = 0,r = 0;
+        int minLen = s_len + 1;
+        while (r < s_len) {
+            windowFrequency[s[r]]++;
+            
+            while (isValidWindow(windowFrequency, tFrequency)) {
+                if (r - l + 1 < minLen) {
+                    startIndex = l;
+                    endIndex = r;
+                    minLen = r - l + 1;
+                }
+                windowFrequency[s[l]]--;
+                l++;
+            }
+            r++;
+        }
+        string output = (startIndex == -1) ? "" : s.substr(startIndex, endIndex - startIndex + 1);
+        return output;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Ignore
+
+//Notes: 
+
+//Second while loop:
+//I only enter this loop when I have the
+//smallest substring starting at l
+//So only thing I can do is decrement l
+//in the hopes of getting a smaller substring
+//since decrementing r will give me an invalid
+//window/substring on the other hand incrementing
+//r will give me a bigger substring (absolute fail)
+//completely useless loop in that case
+
+class Solution {
+private:
+    bool isValidWindow(unordered_map<char,int>& windowFrequency, unordered_map<char,int>& tFrequency) {
+        unordered_map<char,int>::iterator it;
+        for (it = tFrequency.begin(); it != tFrequency.end(); it++) {
+            if (windowFrequency[it->first] < it->second) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+public:
+    string minWindow(string s, string t) {
+        unordered_map<char, int> windowFrequency;
+        unordered_map<char, int> tFrequency;
+
+        int t_len = t.size();
+
+        for (int i = 0; i < t_len; i++) {
+            tFrequency[t[i]]++;
+        }
+        
+        int s_len = s.size();
+        int startIndex = -1;
+        int endIndex = -1;
+        int l = 0,r = 0;
+        int minLen = s_len + 1;
+        while (r < s_len) {
+            windowFrequency[s[r]]++;
+            
+            while (isValidWindow(windowFrequency, tFrequency)) {
+                if (r - l + 1 < minLen) {
+                    startIndex = l;
+                    endIndex = r;
+                    minLen = r - l + 1;
+                }
+                windowFrequency[s[l]]--;
+                l++;
+            }
+            r++;
+        }
+        string output = (startIndex == -1) ? "" : s.substr(startIndex, endIndex - startIndex + 1);
+        return output;
+    }
+};
+
+
+
+
+
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        int mp[256] = {0};
+
+        // preprocessing the string t
+        for(char c: t) mp[c]++;
+
+        int l , r;
+        l = r = 0;
+        int minL = INT_MAX, count = 0;
+
+        int start = 0, end = -1;
+
+        while(r < s.size()){
+            char c = s[r];
+            // we are reverse engineering the hashing. only those characters will have positive value which were in string t all other will get in negative
+            mp[c]--;
+
+            if(mp[c] >= 0) count++;
+
+            while(count == t.size()){
+                int currLen = r - l + 1;
+                if(currLen < minL){
+                    minL = currLen;
+                    start = l, end = r;
+                }
+                // removing the element from map reversely. as all those who were not part of t will end up to 0 and which were present in t will get to positive due to preprocesing step
+                mp[s[l]]++;
+
+                // if any value get positive it means it was part of t thats why
+                if(mp[s[l]] > 0) count--;
+                l++;
+            }
+            r++;
+        }
+        
+        return s.substr(start, end - start +1);
+    }
+};
+
+
+
+
+
+
+//I stopped passing array to the validator function and now the code runs at 4ms instead of 34ms
+
+//Notes: 
+
+//Second while loop:
+//I only enter this loop when I have the
+//smallest substring starting at l
+//So only thing I can do is decrement l
+//in the hopes of getting a smaller substring
+//since decrementing r will give me an invalid
+//window/substring on the other hand incrementing
+//r will give me a bigger substring (absolute fail)
+//completely useless loop in that case
+
+class Solution {
+private:
+
+    int getIndex(char c) {
+        return c >= 'a' ? c - 'a' : c - 'A' + 26;
+    }
+
+    
+
+public:
+    string minWindow(string s, string t) {
+        int windowFrequency[52] = {0};
+        int tFrequency[52] = {0};
+
+        int t_len = t.size();
+        int s_len = s.size();
+
+        if(t_len==0 || s_len == 0 || s_len<t_len)return "";
+
+        for (int i = 0; i < t_len; i++) {
+            tFrequency[getIndex(t[i])]++;
+        }
+        
+        
+        int startIndex = -1;
+        int endIndex = -1;
+        int l = 0,r = 0;
+        int minLen = s_len + 1;
+        while (r < s_len) {
+            windowFrequency[getIndex(s[r])]++;
+            bool gamer = true;
+            for (int i = 0; i < 52; i++) {
+                if (windowFrequency[i] < tFrequency[i]) {
+                    gamer = false;
+                }
+            }
+            
+            while (gamer) {
+                if (r - l + 1 < minLen) {
+                    startIndex = l;
+                    endIndex = r;
+                    minLen = r - l + 1;
+                }
+                windowFrequency[getIndex(s[l])]--;
+                l++;
+                for (int i = 0; i < 52; i++) {
+                if (windowFrequency[i] < tFrequency[i]) {
+                    gamer = false;
+                }
+            }
+            }
+            r++;
+        }
+        string output = (startIndex == -1) ? "" : s.substr(startIndex, endIndex - startIndex + 1);
+        return output;
+    }
+};
+
+
