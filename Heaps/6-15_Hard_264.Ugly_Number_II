@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<int> primes = {2,3,5};
+        unordered_set<long> s;
+        priority_queue<long, vector<long>, greater<long>> pq;
+        s.insert(1);
+        pq.push(1);
+        long nth_ugly;
+        for (int i = 0; i < n; i++) {
+            nth_ugly = pq.top();
+            pq.pop();
+            for (long num : primes) {
+                long ugly = nth_ugly * num;
+                if (s.find(ugly) == s.end()) {
+                    s.insert(ugly);
+                    pq.push(ugly);
+                }
+            }
+        }
+
+        return nth_ugly;
+    }
+};
