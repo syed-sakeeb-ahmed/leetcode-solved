@@ -1,0 +1,60 @@
+class Solution {
+class UnionFind {
+    vector<int> rank, parent;
+    public:
+    UnionFind(int n) {
+        parent.resize(n + 1, 0);
+        rank.resize(n + 1, 0);
+        iota(parent.begin(), parent.end(), 0);
+    }
+
+    int find(int node) {
+        if (parent[node] == node) return node;
+        return parent[node] = find(parent[node]);
+    }
+
+    bool Union(int a, int b) {
+        int pa = find(a), pb = find(b);
+        if (pa == pb) return false;
+        if (rank[pa] < rank[pb]) {
+            parent[pa] = pb;
+        } 
+        else if (rank[pa] > rank[pb]) {
+            parent[pb] = pa;
+        }
+        else {
+            parent[pa] = pb;
+            rank[pb]++;
+        }
+        return true;
+    }
+};
+public:
+    vector<int> findRedundantDirectedConnection(vector<vector<int>>& edges) {
+        int n = edges.size();
+        int e1 = -1;
+        int e2 = -1;
+        vector<int> cv(n + 1, -1);
+        for (int i = 0; i < n; i++) {
+            if (cv[edges[i][1]] != -1) {
+                
+                e1 = cv[edges[i][1]];
+                e2 = i;
+            }
+            cv[edges[i][1]] = i;
+        }
+
+        UnionFind uf(n + 1);
+        for (int i = 0; i < n; i++) {
+            if (i == e2) continue;
+
+            if (!uf.Union(edges[i][0], edges[i][1])) {
+                if (e1 != -1) return edges[e1];
+                else return edges[i];
+            }
+        }
+
+
+        return edges[e2];
+    }
+};
