@@ -1,0 +1,45 @@
+class Solution {
+class UnionFind {
+    vector<int> rank, parent;
+    public:
+        UnionFind(int n) {
+            parent.resize(n + 1);
+            rank.resize(n + 1);
+            iota(parent.begin(), parent.end(), 0);
+        }
+
+        int find(int n) {
+            if (parent[n] == n) return n;
+            return parent[n] = find(parent[n]);
+        }
+
+        void Union(int a, int b) {
+            int pa = find(a), pb = find(b);
+            if (rank[pa] < rank[pb]) {
+                parent[pa] = pb;
+            }
+            else if (rank[pa] > rank[pb]) {
+                parent[pb] = pa;
+            }
+            else {
+                parent[pb] = pa;
+                rank[pa]++;
+            }
+        }
+};
+public:
+    int minSwapsCouples(vector<int>& row) {
+        UnionFind uf(row.size());
+        for (int i = 0; i < row.size(); i+=2) {
+            uf.Union(i, i + 1);
+        }
+        int count = 0;
+        for (int i = 0; i < row.size(); i+=2) {
+            if (uf.find(row[i]) != uf.find(row[i+1])) {
+                uf.Union(row[i], row[i + 1]);
+                count++;
+            }
+        }
+        return count;
+    }
+};

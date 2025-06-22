@@ -1,0 +1,19 @@
+class Solution {
+int N;
+unordered_set<int> s;
+void dfs(int node ,vector<vector<int>>& rooms) {
+    s.insert(node);
+    for (int i = 0; i < rooms[node].size();i++) {
+        int v = rooms[node][i];
+        if (!s.count(v)) {
+            dfs(v, rooms);
+        }
+    }
+}
+public:
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+        N = rooms.size();
+        dfs(0, rooms);
+        return (s.size() == N);
+    }
+};

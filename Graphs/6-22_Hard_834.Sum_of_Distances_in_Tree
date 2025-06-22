@@ -1,0 +1,39 @@
+class Solution {
+int N;
+vector<vector<int>> adj;
+vector<int> res, count;
+
+void dfs(int i, int p = -1) {
+
+    for (auto vert : adj[i]) {
+        if (vert == p) continue;
+        dfs(vert, i);
+        count[i] += count[vert];
+        res[i] += res[vert] + count[vert];
+    }
+    count[i] += 1;
+}
+
+void dfs2(int i, int n, int p = -1) {
+    for (auto vert : adj[i]) {
+        if (vert == p) continue;
+        res[vert] = res[i] - count[vert] + n - count[vert];
+        dfs2(vert, n, i);
+    }
+}
+public:
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>>& edges) {
+        N = n;
+        adj.resize(n);
+        count.resize(n);res.resize(n);
+        for (int i = 0; i < edges.size(); i++) {
+            int a = edges[i][0];
+            int b = edges[i][1];
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+        dfs(0);
+        dfs2(0, n);
+        return res;
+    }
+};
