@@ -1,0 +1,35 @@
+class Solution {
+vector<int> result;
+vector<bool> visited;
+void dfs(int node, vector<vector<int>>& adj, vector<int>& quiet) {
+    visited[node] = true;
+    result[node] = node;
+    for (const auto& n : adj[node]) {
+        if (!visited[n]) {
+            dfs(n, adj, quiet);
+        }
+        int tree_least = quiet[result[n]];
+        int my_least = quiet[result[node]];
+        if (my_least > tree_least) result[node] = result[n];
+    }
+}
+public:
+    vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
+        int n = quiet.size();
+        int blam = richer.size();
+        result.resize(n, INT_MAX);
+        visited.resize(n, false);
+        vector<vector<int>> adj(n);
+        for (int i = 0; i < blam; i++) {
+            int a = richer[i][1], b = richer[i][0];
+            adj[a].push_back(b);
+        }
+        for (int i = 0; i < quiet.size(); i++) {
+            int a = i;
+            if (!visited[a]) {
+                dfs(a, adj, quiet);
+            }
+        }
+        return result;
+    }
+};
