@@ -1,0 +1,44 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+unordered_map<TreeNode*, vector<TreeNode*>> adj;
+unordered_map<TreeNode*, bool> visited;
+vector<int> result;
+void buildAdj(TreeNode* node, TreeNode* parent) {
+    if (node == NULL) return; 
+    if (parent != NULL) {
+        adj[parent].push_back(node);
+        adj[node].push_back(parent);
+    }
+    buildAdj(node->left, node);
+    buildAdj(node->right, node);
+}
+void dfs(TreeNode* node, int k) {
+  visited[node] = true;
+  if (k == 0) {
+    result.push_back(node->val);
+    return;
+  }
+  for (int i = 0; i < adj[node].size(); i++) {
+    TreeNode* neigh = adj[node][i];
+    if (!visited[neigh]) {
+        dfs(neigh, k - 1);
+    }
+  }  
+}
+
+public:
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        if (root == NULL) return {};
+        buildAdj(root, NULL);
+        dfs(target, k);
+        return result;
+    }
+};
