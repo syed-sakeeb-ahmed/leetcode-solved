@@ -1,0 +1,66 @@
+class Solution {
+    queue<pair<int, int>> q;
+
+    void dfs(vector<vector<int>>& grid, int i, int j) {
+        if (i < 0 || i >= grid.size() || j < 0 || j >= grid.size() ||
+            grid[i][j] == 0 || grid[i][j] == 2)
+            return;
+
+        grid[i][j] = 2;
+        q.push({i, j});
+
+        dfs(grid, i - 1, j);
+        dfs(grid, i + 1, j);
+        dfs(grid, i, j - 1);
+        dfs(grid, i, j + 1);
+    }
+
+    int bfs(vector<vector<int>>& grid) {
+
+        vector<vector<int>> dir = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int d = 0;
+
+        while (!q.empty()) {
+            int n = q.size();
+
+            while (n-- > 0) {
+                auto temp = q.front();
+                q.pop();
+                for (int i = 0; i < 4; i++) {
+                    int x = temp.first + dir[i][0];
+                    int y = temp.second + dir[i][1];
+
+                    if (x >= 0 && x < grid.size() && y >= 0 &&
+                        y < grid.size()) {
+                        if (grid[x][y] == 1) {
+                            return d;
+                        }
+                        if (grid[x][y] == 0) {
+                            grid[x][y] = 2;
+                            q.push({x, y});
+                        }
+                    }
+                }
+            }
+            d++;
+        }
+        return -1;
+    }
+
+public:
+    int shortestBridge(vector<vector<int>>& grid) {
+        int flag = 0;
+        for (int i = 0; i < grid.size(); i++) {
+            for (int j = 0; j < grid.size(); j++) {
+                if (grid[i][j] == 1) {
+                    flag = 1;
+                    dfs(grid, i, j);
+                    break;
+                }
+            }
+            if (flag)
+                break;
+        }
+        return bfs(grid);
+    }
+};
