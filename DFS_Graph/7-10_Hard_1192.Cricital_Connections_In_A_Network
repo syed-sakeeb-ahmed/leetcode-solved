@@ -1,0 +1,39 @@
+class Solution {
+vector<int> t;
+vector<int> visited;
+vector<int> low;
+vector<vector<int>> result;
+int time = 0;
+void dfs(int node, vector<vector<int>>& adj, int parent) {
+    visited[node] = 1;
+    t[node] = low[node] = time++;
+    
+    for (int i = 0; i < adj[node].size(); i++) {
+        int nei = adj[node][i];
+        if (nei == parent) continue;
+        if (visited[nei]) low[node] = (t[nei] < low[node]) ? t[nei] : low[node];
+        if (!visited[nei]) {
+            dfs(nei, adj, node);
+            low[node] = min(low[nei], low[node]);
+            if (low[nei] > t[node]) result.push_back({node, nei});
+        }
+    }
+}
+public:
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        t.resize(n,0);
+        visited.resize(n,0);
+        low.resize(n, 0);
+        time++;
+        vector<vector<int>> adj(n, vector<int>());
+        for (int i = 0; i < connections.size(); i++) {
+            int a = connections[i][0], b = connections[i][1];
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) dfs(i, adj, -1);
+        }
+        return result;
+    }
+};

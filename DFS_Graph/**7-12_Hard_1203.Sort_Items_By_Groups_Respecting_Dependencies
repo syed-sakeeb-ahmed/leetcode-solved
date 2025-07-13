@@ -1,0 +1,69 @@
+class Solution {
+template<typename T>
+bool topoSort(vector<T>& adj, vector<int>& degree, vector<int>& sorted) {
+    queue<int> q;
+    for (int i = 0; i < degree.size(); i++) {
+        if (degree[i] == 0) q.push(i);
+    }
+    while (!q.empty()) {
+        int temp = q.front(); q.pop();
+        //cout << temp << " ";
+        sorted.push_back(temp);
+        for (const auto& nei : adj[temp]) {
+            degree[nei]--;
+            if (degree[nei] == 0) q.push(nei);
+        }
+    }
+    //cout << endl;
+    return sorted.size() == degree.size();
+}
+public:
+    vector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& beforeItems) {
+        vector<vector<int>> itemAdj(n, vector<int>());
+        int custGIndex = m;
+        vector<int> extGroup(n + m * 2, 0);
+        for (int i = 0; i < n; i++) {
+            if (group[i] != -1) {
+                extGroup[i] = group[i];
+            }
+            else {
+                extGroup[i] = m;
+                m++;
+            }
+        }
+        int M = extGroup.size();
+        vector<unordered_set<int>> groupAdj(M, unordered_set<int>());
+        
+        vector<int> gd(M, 0);
+        vector<int> id(n,0);
+        for (int u = 0; u < beforeItems.size(); u++) {
+            for (const auto& v : beforeItems[u]) {
+                itemAdj[v].push_back(u);
+                id[u]++;
+                if (extGroup[v] != extGroup[u]) {
+                    if (groupAdj[extGroup[v]].count(extGroup[u]) == 0) gd[extGroup[u]]++;
+                    groupAdj[extGroup[v]].insert(extGroup[u]);
+                }
+            }
+        }
+        vector<int> groupSorted;
+        vector<int> itemSorted;
+        bool x = topoSort(groupAdj, gd, groupSorted);
+        bool y = topoSort(itemAdj, id, itemSorted);
+        if (x == 0 || y == 0) {
+            return {};
+        }
+        vector<vector<int>> tempThing(M, vector<int>());
+        for (int i = 0; i < itemSorted.size(); i++) {
+            int g = extGroup[itemSorted[i]];
+            tempThing[g].push_back(itemSorted[i]);
+        }
+        vector<int> result;
+        int gIndex = 0;
+        while (gIndex < M) {
+            result.insert(result.end(), tempThing[groupSorted[gIndex]].begin(), tempThing[groupSorted[gIndex]].end());
+            gIndex++;
+        }
+        return result;
+    }
+};
