@@ -1,0 +1,39 @@
+class Solution {
+bool topoSort(int node, vector<unordered_set<int>>& adj, vector<int>& stat, vector<int>& ans) {
+    if (stat[node] != 0) return stat[node] == 2;
+    stat[node] = 1;
+    for (auto u : adj[node]) {
+        if(!topoSort(u, adj, stat, ans)) return false;
+    }
+    stat[node] = 2;
+    ans.push_back(node);
+    return true;
+}
+public:
+    vector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& beforeItems) {
+        vector<int> res_temp, res(n);
+        vector<unordered_set<int>> adj(n + 2 * m);
+        vector<int> stat(n + 2*m, 0);
+
+        for (int u = 0; u < beforeItems.size(); u++) {
+            if (group[u] != -1) {
+                adj[n + group[u]].insert(u);
+                adj[u].insert(n + m + group[u]);
+            }
+            for (auto v : beforeItems[u]) {
+                if (group[v] == group[u] && group[u] != -1) adj[v].insert(u);
+                else {
+                    int vi = (group[v] == -1) ? v : n + m + group[v];
+                    int ui = (group[u] == -1) ? u : n + group[u];
+                    adj[vi].insert(ui);
+                }
+            }
+        }
+        for (int i = n + 2*m - 1; i >= 0; i--) {
+            if (stat[i] == 0) if (!topoSort(i, adj, stat, res_temp)) return {};
+        }
+        reverse(begin(res_temp), end(res_temp));
+        copy_if(begin(res_temp), end(res_temp), res.begin(), [&](int i) {return i < n;});
+        return res;
+    }
+};
