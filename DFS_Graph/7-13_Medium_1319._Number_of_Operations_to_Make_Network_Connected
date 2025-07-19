@@ -1,0 +1,36 @@
+class Solution {
+int countTreeEdges(int n, vector<vector<int>>& adj, vector<int>& stat) {
+    stat[n] = 1;
+    int count = 0;
+    for (int i = 0; i < adj[n].size(); i++) {
+        int temp = adj[n][i];
+        if (stat[temp] == 0) {
+            count++;
+            count += countTreeEdges(temp, adj, stat);
+        }
+    }
+    return count;
+}
+public:
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        vector<vector<int>> adj(n, vector<int>());
+        vector<int> stat(n, 0);
+        for (int i = 0; i < connections.size(); i++) {
+            int a = connections[i][0], b = connections[i][1];
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+
+        int compCount = 0;
+        int treeEdges = 0;
+        for (int i = 0; i < adj.size(); i++) {
+            if (!stat[i]) {
+                compCount++;
+                treeEdges += countTreeEdges(i, adj, stat);
+            }
+        }
+        int availableEdges = connections.size() - treeEdges;
+        if (availableEdges < (compCount - 1) ) return -1;
+        return compCount - 1;
+    }
+};
