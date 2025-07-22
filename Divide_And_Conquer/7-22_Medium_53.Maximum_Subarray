@@ -1,0 +1,28 @@
+class Solution {
+int solve(vector<int>& arr, int lower, int upper) {
+    if (lower > upper) return INT_MIN;
+    if (lower == upper) return arr[lower];
+
+    int mid = (lower + upper) / 2;
+    int maxLeft = INT_MIN;
+    int sum = 0;
+    for (int i = mid; i >= lower; i--) {
+        sum += arr[i];
+        maxLeft = max(sum, maxLeft);
+    }
+    sum = 0;
+    int maxRight = INT_MIN;
+    for (int i = mid + 1; i <= upper; i++) {
+        sum += arr[i];
+        maxRight = max(maxRight, sum);
+    }
+    int crossMax = max({maxLeft, maxRight, maxLeft + maxRight});
+    int left = solve(arr, lower, mid);
+    int right = solve(arr, mid + 1, upper);
+    return max({left, right, crossMax});
+}
+public:
+    int maxSubArray(vector<int>& nums) {
+        return solve(nums, 0, nums.size() - 1);
+    }
+};
