@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int reverseBits(int n) {
+        int top = n;
+        int mid = 1;
+        int bot = 0;
+        int i = 0;
+        while (i < 32) { // Only need to left shift 31 times since first bit is already left shifted alternatively just ignore left shift by ignoring first 0 bit in bot
+            int lsb = top & 1;
+            top = top >> 1;
+            bot = bot << 1; //If i switch this with next line then only need to run this loop 31 times instead of 32
+            bot |= lsb;
+            i++;
+        }
+
+        return bot;
+    }
+};

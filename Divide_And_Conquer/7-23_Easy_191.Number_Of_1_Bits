@@ -1,0 +1,13 @@
+class Solution {
+public:
+    int hammingWeight(int n) {
+        int top = n;
+        int count = 0;
+        while (top > 0) {
+            int lsb = top & 1;
+            top >>= 1;
+            if (lsb == 1) count++;
+        }
+        return count;
+    }
+};
