@@ -1,0 +1,21 @@
+class Solution {
+bool bs(int left, int right, vector<int>& arr, int target) {
+    if (left > right) return false;
+    int mid = (left + right) / 2;
+    if (arr[mid] == target) return true;
+    else if (target < arr[mid]) {
+        return bs(left, mid - 1, arr, target);
+    }
+    else if (target > arr[mid]) {
+        return bs(mid + 1, right, arr, target);
+    }
+    return false;
+}
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        for (int i = 0; i < matrix.size(); i++) {
+            if (bs(0, matrix[i].size() - 1, matrix[i], target)) return true; 
+        }
+        return false;
+    }
+};
