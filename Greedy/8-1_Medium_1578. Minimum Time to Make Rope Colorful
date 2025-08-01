@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int minCost(string colors, vector<int>& neededTime) {
+        int n = neededTime.size();
+        if (n <= 1) return 0;
+        vector<int> ro(n + 1, -1);
+        ro[1] = 0;
+        int minCost = 0;
+
+        for (int i = 1; i < colors.length(); i++) {
+            int lastItem = ro[i];
+            if (colors[i] == colors[lastItem]) {
+                int l = neededTime[lastItem];
+                int r = neededTime[i];
+                int temp = (l < r) ? l : r;
+                minCost += temp;
+                int val = (l < r) ? i : lastItem;
+                ro[i + 1] = val;
+            }
+            else {
+                ro[i + 1] = i;
+            }
+        }
+        return minCost;
+    }
+};
