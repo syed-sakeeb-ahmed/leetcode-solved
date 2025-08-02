@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        if (days.size() == 0) return 0;
+        vector<int> r(366, 0);
+        vector<int> k = {1,7,30};
+        r[0] = 0;
+        int curIndex = 0;
+        for (int i = 1; i <= 365; i++) {
+            if (curIndex < days.size() && i == days[curIndex]) {
+                int j = 0;
+                curIndex++;
+                long minCost = LONG_MAX;
+                while (j < 3) {
+                    int curr = k[j];
+                    int bal = (i - curr >= 0) ? i - curr : 0;
+                    minCost = min(minCost, (long) costs[j] + r[bal]);
+                    j++;
+                }
+                r[i] = minCost;
+            }
+            else {
+                r[i] = r[i - 1];
+            }
+        }
+        return r[365];
+    }
+};
