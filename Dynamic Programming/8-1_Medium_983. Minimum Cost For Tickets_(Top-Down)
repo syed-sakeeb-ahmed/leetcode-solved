@@ -1,0 +1,29 @@
+class Solution {
+int ticketsAux(int i, vector<int>& r, vector<int>& cost, set<int>& y) {
+    if (i == 0) {
+        r[i] = 0;
+        return r[i];
+    }
+    if (r[i] != - 1) return r[i];
+    
+    if (y.find(i) == y.end()) {
+        int ans = ticketsAux(i - 1, r, cost, y);
+        r[i] = ans;
+    }
+    else {
+        int a,b,c;
+        a = max(i - 1, 0); 
+        b = max(i - 7, 0);
+        c = max(i - 30, 0);
+        int ans = min({ticketsAux(a, r, cost, y) + cost[0], ticketsAux(b, r, cost, y) + cost[1], ticketsAux(c, r, cost, y) + cost[2]});
+        r[i] = ans;
+    }
+    return r[i];
+}
+public:
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        set<int> y(begin(days), end(days));
+        vector<int> r(366, -1);
+        return ticketsAux(365, r, costs, y);
+    }
+};
