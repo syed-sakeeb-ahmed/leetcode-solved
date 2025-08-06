@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        if (matrix.size() == 0) return 0;
+        int m = matrix.size();
+        int n = matrix[0].size();
+        vector<vector<int>> r(m, vector<int>(n, 0));
+        int maxCount = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '1') {
+                    int up = (i - 1 >= 0) ? r[i - 1][j] : 0;
+                    int left = (j - 1 >= 0) ? r[i][j - 1] : 0;
+                    int diag = (i - 1 >= 0 && j - 1 >= 0) ? r[i - 1][j - 1] : 0;
+                    int val = min({up, left, diag});
+                    r[i][j] = val + 1;
+                    if (r[i][j] > maxCount) maxCount = r[i][j];
+                }
+            }
+        }
+        return maxCount * maxCount;
+    }
+};
