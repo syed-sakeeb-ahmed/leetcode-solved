@@ -1,0 +1,37 @@
+class Solution {
+    int aux(string& s1, string& s2, int i, int j, vector<vector<int>>& r) {
+        if (r[i][j] != -1) return r[i][j];
+        if (j == 0 && i == 0) {
+            r[i][j] = 0;
+            return r[i][j];
+        }
+        if (j == 0) {
+            r[i][j] = aux(s1,s2,i-1,j,r) + s1[i - 1];
+            return r[i][j];
+        }
+        if (i == 0) {
+            r[i][j] = aux(s1,s2,i,j-1,r) + s2[j - 1];
+            return r[i][j];
+        }
+
+        if (s1[i - 1] == s2[j - 1]) {
+            r[i][j] = aux(s1,s2,i-1,j-1,r);
+            return r[i][j];
+        }
+        else {
+            r[i][j] = min(  s1[i - 1] + aux(s1,s2,i-1,j,r),s2[j - 1] + aux(s1,s2,i,j-1,r)   );
+            return r[i][j];
+        }
+    }
+public:
+    int minimumDeleteSum(string s1, string s2) {
+        int m = s1.length();
+        int n = s2.length();
+        vector<vector<int>> r(m + 1, vector<int>(n + 1, -1));
+        
+        aux(s1,s2,m, n, r);
+        
+
+        return r[m][n];
+    }
+};
