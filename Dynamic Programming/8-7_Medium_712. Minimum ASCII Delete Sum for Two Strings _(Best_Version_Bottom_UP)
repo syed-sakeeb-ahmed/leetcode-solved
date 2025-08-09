@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int minimumDeleteSum(string s1, string s2) {
+        int m = s1.length();
+        int n = s2.length();
+        vector<vector<int>> r(m + 1, vector<int>(n + 1, 0));
+        
+        for (int i = 1; i < m + 1; i++) {
+            for (int j = 1; j < n + 1; j++) {
+                if (s1[i - 1] == s2[j - 1]) r[i][j] = r[i - 1][j - 1] + s1[i-1];
+                else {
+                    r[i][j] = max(r[i -1][j], r[i][j-1]);
+                }
+            }
+        }
+
+        int sum1=0,sum2=0;
+        for (char c : s1) sum1 += c;
+        for (char c : s2) sum2 += c;
+        sum1 -= r[m][n];
+        sum2 -= r[m][n];
+        return sum1+sum2;
+    }
+};
