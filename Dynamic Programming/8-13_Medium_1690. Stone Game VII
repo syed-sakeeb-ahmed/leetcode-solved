@@ -1,0 +1,31 @@
+class Solution {
+int aux(vector<vector<int>>& r, vector<int>& s, int i, int j,int sum,int step) {
+    
+    if (i == j) return 0;
+
+    if (r[i][j] != -1) return r[i][j];
+
+    if (step % 2 == 0) {
+        int left = -s[i] + sum;
+        int right = -s[j] + sum;
+        r[i][j] = max(left + aux(r,s,i+1,j, sum - s[i],step+1), right + aux(r,s,i,j-1, sum - s[j],step+1));
+        return r[i][j];
+    }
+    else {
+        int left = -s[i] + sum;
+        int right = -s[j] + sum;
+        r[i][j] = min(aux(r,s,i+1,j, sum-s[i],step+1) - left, aux(r,s,i,j-1,sum-s[j],step+1) - right);
+        return r[i][j];
+    }
+    return 0;
+}
+public:
+    int stoneGameVII(vector<int>& stones) {
+        int n = stones.size();
+        int a = 0, b = 0;
+        int sum = accumulate(begin(stones), end(stones), 0);
+        vector<vector<int>> r(n, vector<int>(n, -1));
+        aux(r, stones, 0, n-1, sum,0);
+        return r[0][n-1];
+    }
+};
