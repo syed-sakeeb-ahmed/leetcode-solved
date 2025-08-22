@@ -1,0 +1,48 @@
+class Solution {
+    vector<int> row = {1, 1, 0, -1, -1, -1, 0, 1};
+    vector<int> col = {0, 1, 1, 1, 0, -1, -1, -1};
+
+public:
+    vector<vector<char>> updateBoard(vector<vector<char>>& board,
+                                     vector<int>& click) {
+        if (board.size() == 0)
+            return board;
+        if (board[click[0]][click[1]] == 'M') {
+            board[click[0]][click[1]] = 'X';
+            return board;
+        }
+        
+        int m = board.size();
+        int n = board[0].size();
+        vector<vector<int>> v(m, vector<int>(n, 0));
+        queue<pair<int, int>> q;
+        q.push({click[0], click[1]});
+        while (!q.empty()) {
+            pair<int, int> temp = q.front();
+            q.pop();
+            if (board[temp.first][temp.second] == 'M') {board[temp.first][temp.second] = 'X';continue;}
+            int count = 0;
+            for (int i = 0; i < 8; i++) {
+                int r = row[i] + temp.first;
+                int c = col[i] + temp.second;
+                if (r >= 0 && r < m && c >= 0 && c < n) {
+                    if (board[r][c] == 'M')
+                        count++;
+                }
+            }
+            if (count > 0)
+                board[temp.first][temp.second] = to_string(count)[0];
+            else {
+                board[temp.first][temp.second] = 'B';
+                for (int i = 0; i < 8; i++) {
+                    int r = row[i] + temp.first;
+                    int c = col[i] + temp.second;
+                    if (r >= 0 && r < m && c >= 0 && c < n) {
+                        if ((board[r][c] == 'M' || board[r][c] == 'E') && !v[r][c]) {q.push({r,c});v[r][c] = 1;}
+                    }
+                }
+            }
+        }
+        return board;
+    }
+};

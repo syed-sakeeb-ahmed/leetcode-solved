@@ -1,0 +1,25 @@
+class Solution {
+vector<int> row = {1,-1,0,0};
+vector<int> col = {0,0,-1,1};
+void dfs(int i, int j, vector<vector<bool>>& v, vector<vector<char>>& g) {
+    v[i][j] = true;
+    for (int k = 0; k < 4; k++) {
+        int rDir = i + row[k];
+        int cDir = j + col[k];
+        if (rDir >= 0 && rDir < g.size() && cDir >=0 && cDir < g[0].size() && !v[rDir][cDir] && g[rDir][cDir] == '1') dfs(rDir,cDir, v,g);
+    }
+}
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<bool>> v(m,vector<bool>(n, false));
+        int count = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (!v[i][j] && grid[i][j] == '1') {dfs(i,j,v,grid);count++;}
+            }
+        }
+        return count;
+    }
+};

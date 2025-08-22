@@ -1,0 +1,25 @@
+class Solution {
+long aux(int amount, vector<int>& coins, vector<int>& r) {
+    if (amount == 0) {
+        r[amount] = 0;
+        return r[amount];
+    }
+    if (amount < 0) {
+        return INT_MAX;
+    }
+    if (r[amount] != -1) return r[amount];
+    long q = INT_MAX;
+    for (int i = 0; i < coins.size(); i++) {
+        q = min(q, 1 + aux(amount - coins[i],coins,r));
+    }
+    r[amount] = q;
+    return r[amount];
+}
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        vector<int> r(amount + 1, -1);
+        aux(amount, coins, r);
+        if (r[amount] == INT_MAX) return -1;
+        return r[amount];
+    }
+};
