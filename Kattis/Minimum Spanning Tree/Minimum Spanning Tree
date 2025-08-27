@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class UFDS {
+    private:
+    vector<int> p,rank;
+    int numSets;
+    
+    public:
+    UFDS(int n) {
+        p.assign(n,0); for(int i = 0; i < n; i++) p[i] = i;
+        rank.assign(n,0);
+        numSets = n;
+    }
+    
+    int getSets() {
+        return numSets;
+    }
+    
+    bool sameSet(int i, int j) {
+        return findSet(i) == findSet(j);
+    }
+    
+    int findSet(int i) {
+        return (p[i] == i) ? i : p[i] = findSet(p[i]);
+    }
+    
+    void unionSet(int i, int j) {
+        int x = findSet(i), y = findSet(j);
+        if (x == y) return;
+        if (rank[y] < rank[x]) swap(x,y);
+        p[x] = y;
+        if (rank[x] == rank[y]) rank[y]++;
+        numSets--;
+    }
+    
+};
+
+int main() {
+    int n,m;
+    while (scanf("%d %d ", &n, &m) && (n || m)) {
+        vector<tuple<int,int,int>> EL;
+        while (m--) {
+            int u,v,w;
+            scanf("%d %d %d", &u,&v,&w);
+            EL.push_back({w,u,v});
+        }
+        sort(EL.begin(), EL.end());
+        UFDS us(n);
+        long mst = 0;
+        int count = 0;
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+        for (int i = 0; i < EL.size(); i++) {
+            int x,y,z;
+            tie(x,y,z) = EL[i];
+            if (us.sameSet(y,z)) continue;
+            us.unionSet(y,z);
+            mst += x;
+            if (z < y) swap(y,z);
+            pq.push({y,z});
+            if (us.getSets() == 1) break;
+        }
+        if (us.getSets() > 1) printf("Impossible\n");
+        else {
+            printf("%ld\n", mst);
+            while (!pq.empty()) {
+                pair<int,int> temp = pq.top(); pq.pop();
+                printf("%d %d\n", temp.first, temp.second);
+            }
+        }
+    }
+    return 0;
+}
