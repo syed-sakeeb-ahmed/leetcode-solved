@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+vector<int> taken;
+priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+vector<vector<pair<int,int>>> adj;
+
+void process(int node) {
+    taken[node] = 1;
+    for (int i = 0; i < adj[node].size(); i++) {
+        pair<int,int> temp = adj[node][i];
+        if (!taken[temp.second]);
+            pq.push(temp);
+    }
+}
+
+int main() {
+    int t;
+    scanf("%d ", &t);
+    
+    while (t--) {
+        int m,c;
+        scanf("%d %d ", &m, &c);
+        int times = (c * (c - 1)) / 2;
+        adj.assign(c, vector<pair<int,int>>());
+        taken.assign(c, 0);
+        pq = priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>>();
+        while (times--) {
+            int x,y,w;
+            scanf("%d %d %d ", &x,&y,&w);
+            adj[x].push_back({w,y});
+            adj[y].push_back({w,x});
+        }
+        process(0);
+        int mst = 0;
+        int count = 0;
+        while (!pq.empty()) {
+            pair<int,int> temp = pq.top(); pq.pop();
+            if (taken[temp.second]) continue;
+            process(temp.second);
+            mst += temp.first;
+            count++;
+            if (count == c - 1) break;
+        }
+        bool ans = (mst <= (m-c));
+        if (ans) printf("yes\n");
+        else printf("no\n");
+    }
+    return 0;
+}

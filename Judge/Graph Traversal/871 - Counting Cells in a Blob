@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+vector<int> rd = {1,1,1,0,0,-1,-1,-1};
+vector<int> cd = {-1,0,1,-1,1,-1,0,1};
+
+int floodfill(int i, int j, char c1, char c2,vector<vector<char>>& grid) {
+    if (i < 0 || i >= grid.size()) return 0;
+    if (j < 0 || j >= grid[0].size()) return 0;
+    if (grid[i][j] == c1 || grid[i][j] == '.') return 0;
+    grid[i][j] = '.';
+    int count = 1;
+    for (int k = 0; k < 8; k++) count += floodfill(i + rd[k], j + cd[k], c1, c2, grid);
+    return count;
+}
+
+int main() {
+    
+    int t;
+    scanf("%d ", &t);
+    while (t--) {
+        string s;
+        int myMax = 0;
+        vector<vector<char>> grid;
+        while (getline(cin, s)) {
+            if (s.length() == 0) break;
+            vector<char> t;
+            for (int i = 0; i < s.length(); i++) {
+                t.push_back(s[i]);
+            }
+            grid.push_back(t);
+        }
+        
+        for (int i = 0; i < grid.size(); i++) {
+            for (int j = 0; j < grid[0].size(); j++) {
+                if (grid[i][j] == '1') {
+                    int temp = floodfill(i,j,'0','1',grid);
+                    if (temp > myMax) myMax = temp;
+                }
+            }
+        }
+        printf("%d\n", myMax);
+        if(t) putchar('\n');
+    }
+    
+    return 0;
+}

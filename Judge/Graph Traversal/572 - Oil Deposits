@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> rd = {-1,-1,-1,0,0,1,1,1};
+vector<int> cd = {0,-1,1,-1,1,0,-1,1};
+int M,N;
+
+void floodfill(int i, int j, char c1, char c2, vector<vector<char>>& grid) {
+    if (i < 0 || i >= M) return;
+    if (j < 0 || j >= N) return;
+    if (grid[i][j] == c2 || grid[i][j] == '.') return;
+    grid[i][j] = '.';
+    for (int k = 0; k < 8; k++) {
+        floodfill(i + rd[k], j + cd[k],c1,c2, grid);
+    }
+}
+
+int main() {
+    while (scanf("%d %d ", &M, &N) && (M || N)) {
+        vector<vector<char>> grid(M, vector<char>(N,'0'));
+        int count = 0;
+        for (int i = 0;  i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                scanf("%c ", &grid[i][j]);
+            }
+        }
+        for (int i = 0;  i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                if (grid[i][j] == '@') {
+                    floodfill(i,j,'@','*',grid);
+                    count++;
+                }
+                
+            }
+        }
+        printf("%d\n", count);
+    }
+}
