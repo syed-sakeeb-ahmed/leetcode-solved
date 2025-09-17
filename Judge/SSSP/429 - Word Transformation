@@ -1,0 +1,84 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define INF 1e9
+
+bool isConnected(string& s1, string& s2) {
+    if (s1.length() != s2.length()) return false;
+    int count = 0;
+    for (int i = 0; i < s1.length(); i++) {
+        if (s1[i] != s2[i]) {
+            count++;
+            if (count > 1) return false;
+        }
+    }
+    return true;
+}
+
+int main() {
+    int t;
+    scanf("%d ", &t);
+    while (t--) {
+        string line;
+        bool found = false;
+        vector<string> s_vec;
+        unordered_map<string, int> string_to_int;
+        vector<vector<int>> adj;
+        while(getline(cin, line)) {
+            if (line == "") break;
+            if (line == "*") {
+                found = true;
+                adj.assign(s_vec.size(), vector<int>());
+                for (int i = 0; i < s_vec.size(); i++) {
+                    string s1 = s_vec[i];
+                    for (int j = 0; j < s_vec.size(); j++) {
+                        if (i == j) continue;
+                        string s2 = s_vec[j];
+                        if (isConnected(s1,s2)) {
+                            int u = string_to_int[s1];
+                            int v = string_to_int[s2];
+                            adj[u].push_back(v);
+                            adj[v].push_back(u);
+                        }
+                    }
+                }
+                continue;
+            }
+            if (found) {
+                stringstream ss(line);
+                string str1,str2;
+                ss >> str1;
+                ss >> str2;
+                int start = string_to_int[str1];
+                int end = string_to_int[str2];
+                vector<int> dist(s_vec.size(), INF);
+                vector<int> visited(s_vec.size(), 0);
+                queue<int> q;
+                dist[start] = 0;
+                visited[start] = 1;
+                q.push(start);
+                while (!q.empty()) {
+                    int temp = q.front(); q.pop();
+                    if (temp == end) break;
+                    for (int i = 0; i < adj[temp].size(); i++) {
+                        int temp2 = adj[temp][i];
+                        if (!visited[temp2]) {
+                            visited[temp2] = 1;
+                            dist[temp2] = dist[temp] + 1;
+                            q.push(temp2);
+                        }
+                    }
+                }
+                printf("%s %s %d\n", str1.c_str(), str2.c_str(), dist[end]);
+                
+            }
+            else {
+                s_vec.push_back(line);
+                string_to_int[line] = s_vec.size() - 1;
+                
+            }
+        }
+        if (t > 0) printf("\n");
+    }
+    return 0;
+}
