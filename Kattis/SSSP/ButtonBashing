@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define INF 1e9
+
+int main() {
+    int tests;
+    scanf("%d ", &tests);
+    while (tests--) {
+        int n,t;
+        scanf("%d %d ", &n, &t);
+        int n_run = n;
+        vector<int> choices;
+        while(n_run--) {
+            int item;
+            scanf("%d ", &item);
+            choices.push_back(item);
+        }
+        queue<int> q;
+        vector<int> visited(3601,0);
+        vector<int> dist(3601, INF);
+        dist[0] = 0;
+        visited[0] = 1;
+        q.push(0);
+        while(!q.empty()) {
+            int temp = q.front(); q.pop();
+            for (int i = 0; i < choices.size(); i++) {
+                int temp2 = temp + choices[i];
+                if (temp2 < 0) temp2 = 0;
+                else if (temp2 > 3600) temp2 = 3600;
+                if (!visited[temp2]) {
+                    visited[temp2] = 1;
+                    dist[temp2] = dist[temp] + 1;
+                    q.push(temp2);
+                }
+            }
+        }
+        for (int i = t; i <= 3600; i++) {
+            if (dist[i] != INF) {
+                printf("%d %d\n", dist[i], (i-t));
+                break;
+            }
+        }
+    }
+    
+    return 0;
+}

@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define INF 5e9
+
+int main() {
+    int n,m;
+    scanf("%d %d ", &n, &m);
+    int total = n + 1;
+    string str;
+    getline(cin, str);
+    unordered_map<string,long long> dist;
+    vector<string> s_vec;
+    stringstream ss(str);
+    for (int i = 0; i < n; i++) {
+        string s1;
+        ss >> s1;
+        dist[s1] = INF;
+        s_vec.push_back(s1);
+    }
+    s_vec.push_back("English");
+    unordered_map<string,vector<pair<string, long>>> adj;
+    while (m--) {
+        getline(cin, str);
+        stringstream ss(str);
+        string s1,s2;
+        long res;
+        ss >> s1;
+        ss >> s2;
+        ss >> res;
+        adj[s1].push_back({s2,res});
+        adj[s2].push_back({s1,res});
+    }
+    unordered_map<string,int> depth;
+    unordered_map<string,int> visited;
+    queue<string> q;
+    q.push("English");
+    depth["English"] = 0;
+    visited["English"] = 1;
+    dist["English"] = 0;
+    int count = 1;
+    while (!q.empty()) {
+        string temp = q.front(); q.pop();
+        for (int i = 0; i < adj[temp].size(); i++) {
+            pair<string,long> temp2 = adj[temp][i];
+            if (!visited[temp2.first]) {
+                depth[temp2.first] = depth[temp] + 1;
+                visited[temp2.first] = 1;
+                q.push(temp2.first);
+                count++;
+            }
+            if (depth[temp] < depth[temp2.first]) {
+                if (temp2.second < dist[temp2.first]) {
+                    dist[temp2.first] = temp2.second;
+                }
+            }
+        }
+    }
+    if (count < total) printf("Impossible\n");
+    else {
+        long long cost = 0;
+        for (int i = 0; i < s_vec.size(); i++) {
+            string s1 = s_vec[i];
+            cost += dist[s1];
+        }
+        printf("%lld\n", cost);
+    }
+    
+    
+    return 0;
+}
