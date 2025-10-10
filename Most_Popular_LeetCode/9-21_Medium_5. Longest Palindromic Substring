@@ -1,0 +1,40 @@
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        string m_s = "*";
+        for (int i = 0; i < s.length(); i++) {
+            m_s += s[i];
+            m_s += "*";
+        }
+        int best = 0;
+        int r_left = 0;
+        int r_right = 0;
+        for (int i = 0; i < m_s.length(); i++) {
+            int left = i - 1;
+            int right = i + 1;
+            int count = (m_s[i] == '*') ? 0 : 1;
+            while (left >= 0 && right < m_s.length()) {
+                if (m_s[left] == m_s[right]) {
+                    if (m_s[left] != '*') {
+                        count += 2;
+                    }
+                    left--; right++;
+                }
+                else {
+                    break;
+                }
+            }
+            if (count > best) {
+                best = count;
+                r_left = left + 1;
+                r_right = right - 1;
+            }
+        }
+        string res = "";
+        while (r_left <= r_right) {
+            if (m_s[r_left] != '*') res += m_s[r_left];
+            r_left++;
+        }
+        return res;        
+    }
+};
