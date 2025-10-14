@@ -1,0 +1,19 @@
+class Solution {
+    /*
+    Basically keep the deque in strict decreasing order starting from the left
+    The deque stores the indices and we use these indices to calculate the values from nums
+    */
+public:
+    vector<int> maxSlidingWindow(vector<int>& arr, int k) {
+        deque<int> dq;
+        int n  = arr.size();
+        vector<int> ls;
+        for(int i = 0; i < n; i++){
+            if(!dq.empty() and dq.front() == i-k) dq.pop_front(); //Remove leftmost item if sliding window moves forward
+            while(!dq.empty() and arr[dq.back()] <= arr[i]) dq.pop_back(); //Maintains ordering
+            dq.push_back(i);
+            if(i >= k-1) ls.push_back(arr[dq.front()]); //When sliding window moves forward push the head i.e the biggest element into the final result array
+        }
+        return ls;
+    }
+};
