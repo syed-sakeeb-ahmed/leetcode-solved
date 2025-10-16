@@ -1,0 +1,25 @@
+class Solution {
+unordered_map<string,bool> mp;
+bool aux(string s, vector<string>& wordDict, int count) {
+    if (s == "" && count > 0) return true;
+    if (s == "") return false;
+    if (mp.count(s)) return mp[s];
+    for (int i = 0; i < wordDict.size(); i++) {
+        int p = s.find(wordDict[i]);
+        if (p != string::npos) {
+            bool val1 = aux(s.substr(0,p),wordDict,count+1);
+            bool val2 = aux(s.substr(p + wordDict[i].length(),string::npos), wordDict,count+1);
+            if (val1 && val2) {
+                mp[s] = true;
+                return true;
+            }
+        }
+    }
+    mp[s] = false;
+    return false;
+}
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        return aux(s,wordDict,0);
+    }
+};
