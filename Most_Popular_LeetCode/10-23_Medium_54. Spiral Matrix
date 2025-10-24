@@ -1,0 +1,29 @@
+class Solution {
+vector<int> row = {0,1,0,-1};
+vector<int> col = {1,0,-1,0};
+vector<int> res;
+int item = 0;
+int count = 0;
+bool aux(vector<vector<int>>& matrix, int i, int j, int& term) {
+    if (i < 0 || i >= matrix.size() || j < 0 || j >= matrix[0].size()) return false;
+    if (matrix[i][j] == -1000) return false;
+    res.push_back(matrix[i][j]);
+    matrix[i][j] = -1000;
+    count++;
+    while (true) {
+        if (count == term) break;
+        int r = i + row[item];
+        int c = j + col[item];
+        bool ret = aux(matrix,r,c,term);
+        if (ret == false) item = (item + 1) % 4;
+    } 
+    
+    return true;
+}
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        int term = matrix.size() * matrix[0].size();
+        aux(matrix,0,0,term);
+        return res;
+    }
+};

@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        vector<int> m(nums.size(), 0);
+        for (int i = 1; i < nums.size(); i++) {
+            int best = INT_MAX;
+            for (int j = 0; j < i; j++) {
+                if (nums[j] + j >= i) {
+                    best = min(best, 1 + m[j]);
+                }
+            }
+            m[i] = best;
+        }
+        return m[nums.size() - 1];
+    }
+};

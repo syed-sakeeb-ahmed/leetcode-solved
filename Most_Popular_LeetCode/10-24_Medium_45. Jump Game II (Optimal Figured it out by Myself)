@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int p = 0;
+        int count = 0;
+        while (p + nums[p] < nums.size() - 1) {
+            int best = INT_MIN;
+            int ind = -1;
+            for (int i = p + 1; i <= p + nums[p]; i++) {
+                if (i + nums[i] > best) {
+                    best = i + nums[i];
+                    ind = i;
+                }
+            }
+            p = ind;
+            count++;
+        }
+
+        return (p == nums.size() - 1) ? count : count + 1;
+    }
+};
