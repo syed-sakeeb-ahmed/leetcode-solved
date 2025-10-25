@@ -1,0 +1,29 @@
+class Solution {
+public:
+    //This code was first try, passed all tests first shot beating 89%
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        vector<tuple<int,int>> v;
+        for (int i = 0; i < intervals.size(); i++) {
+            v.push_back({intervals[i][0], intervals[i][1]});
+        }
+        sort(v.begin(), v.end());
+        int p = 0;
+        int biggest = get<1>(v[0]);
+        vector<vector<int>> res;
+        for (int i = 1; i < v.size(); i++) {
+            int x,y;
+            tie(x,y) = v[i];
+            if (x > biggest) {
+                int a = get<0>(v[p]);
+                res.push_back({a,biggest});
+                biggest = y;
+                p = i;
+            }
+            biggest = max(y,biggest);
+        }
+
+        res.push_back({get<0>(v[p]), biggest});
+
+        return res;
+    }
+};
