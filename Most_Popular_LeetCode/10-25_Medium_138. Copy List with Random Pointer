@@ -1,0 +1,52 @@
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if (head == NULL) return NULL;
+
+        unordered_map<Node*, int> mp;
+
+        Node* new_head = new Node(-1);
+        Node* curr = head;
+        Node* new_curr = new_head;
+        Node* prev;
+        vector<Node*> temp;
+        int count = 0;
+        while(curr != NULL) {
+            new_curr->val = curr->val;
+            mp[curr] = count++;
+            temp.push_back(new_curr);
+            new_curr->next = new Node(-1);
+            prev = new_curr;
+            new_curr = new_curr->next;
+            curr = curr->next;
+        }
+        prev->next = NULL;
+        curr = head;
+        new_curr = new_head;
+        while (curr != NULL) {
+            if (curr->random) {
+                int ind = mp[curr->random];
+                new_curr->random = temp[ind];
+            }
+            curr = curr->next;
+            new_curr = new_curr->next;
+        }
+        return new_head;
+    }
+};

@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        if (nums.size() == 1) return 1;
+        int last_item = nums[0];
+        int hole = -1;
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] == last_item) {
+                hole = i;
+                break;
+            }
+            else {
+                last_item = nums[i];
+            }
+        }
+        if (hole == -1) return nums.size();
+        last_item = nums[hole];
+        int count = hole;
+        for (int i = hole + 1; i < nums.size(); i++) {
+            if (nums[i] != last_item) {
+                last_item = nums[i];
+                swap(nums[i], nums[hole]);
+                hole++;
+                count++;
+            }
+        }
+        return count;
+    }
+};
